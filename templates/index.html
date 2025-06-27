@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
+    <title>To-Do List - Filtros Dinâmicos</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{{ url_for('static', filename='js/filters.js') }}"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -31,30 +32,35 @@
         <!-- Filtros -->
         <div class="bg-primary-light p-4 rounded-lg mb-6">
             <h2 class="text-xl font-semibold text-accent mb-4">Filtrar Tarefas</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">ID</label>
-                    <input type="text" class="w-full bg-gray-700 rounded px-3 py-2">
+            <form id="filterForm">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">ID</label>
+                        <input type="text" name="id" class="w-full bg-gray-700 rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Nome</label>
+                        <input type="text" name="name" class="w-full bg-gray-700 rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Status</label>
+                        <select name="status" class="w-full bg-gray-700 rounded px-3 py-2">
+                            <option value="">Todos</option>
+                            <option value="pendente">Pendente</option>
+                            <option value="em_andamento">Em Andamento</option>
+                            <option value="concluido">Concluído</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <button type="submit" id="filterButton" class="bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded w-full transition-colors">
+                            Filtrar
+                        </button>
+                        <button type="button" id="clearButton" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition-colors">
+                            Limpar
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Nome</label>
-                    <input type="text" class="w-full bg-gray-700 rounded px-3 py-2">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Status</label>
-                    <select class="w-full bg-gray-700 rounded px-3 py-2">
-                        <option value="">Todos</option>
-                        <option value="pendente">Pendente</option>
-                        <option value="em_andamento">Em Andamento</option>
-                        <option value="concluido">Concluído</option>
-                    </select>
-                </div>
-                <div class="flex items-end">
-                    <button class="bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded w-full transition-colors">
-                        Filtrar
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
         
         <!-- Botão Adicionar Nova Task -->
@@ -76,46 +82,27 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Exemplo de linhas da tabela -->
+                    {% for task in tasks %}
                     <tr class="border-b border-gray-700 hover:bg-gray-700">
-                        <td class="px-4 py-3">1</td>
-                        <td class="px-4 py-3">Implementar login</td>
-                        <td class="px-4 py-3">Criar sistema de autenticação</td>
+                        <td class="px-4 py-3">{{ task.id }}</td>
+                        <td class="px-4 py-3">{{ task.name }}</td>
+                        <td class="px-4 py-3">{{ task.description }}</td>
                         <td class="px-4 py-3">
-                            <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded">Pendente</span>
+                            {% if task.status == 'pendente' %}
+                                <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded">Pendente</span>
+                            {% elif task.status == 'em_andamento' %}
+                                <span class="bg-orange-500 text-white text-xs px-2 py-1 rounded">Em Andamento</span>
+                            {% elif task.status == 'concluido' %}
+                                <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Concluído</span>
+                            {% endif %}
                         </td>
-                        <td class="px-4 py-3">15/06/2023</td>
+                        <td class="px-4 py-3">{{ task.due_date }}</td>
                         <td class="px-4 py-3">
                             <button class="text-blue-400 hover:text-blue-300 mr-2">Editar</button>
                             <button class="text-red-400 hover:text-red-300">Deletar</button>
                         </td>
                     </tr>
-                    <tr class="border-b border-gray-700 hover:bg-gray-700">
-                        <td class="px-4 py-3">2</td>
-                        <td class="px-4 py-3">Criar API</td>
-                        <td class="px-4 py-3">Desenvolver endpoints REST</td>
-                        <td class="px-4 py-3">
-                            <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Concluído</span>
-                        </td>
-                        <td class="px-4 py-3">10/06/2023</td>
-                        <td class="px-4 py-3">
-                            <button class="text-blue-400 hover:text-blue-300 mr-2">Editar</button>
-                            <button class="text-red-400 hover:text-red-300">Deletar</button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-700 hover:bg-gray-700">
-                        <td class="px-4 py-3">3</td>
-                        <td class="px-4 py-3">Testar sistema</td>
-                        <td class="px-4 py-3">Realizar testes unitários</td>
-                        <td class="px-4 py-3">
-                            <span class="bg-orange-500 text-white text-xs px-2 py-1 rounded">Em Andamento</span>
-                        </td>
-                        <td class="px-4 py-3">20/06/2023</td>
-                        <td class="px-4 py-3">
-                            <button class="text-blue-400 hover:text-blue-300 mr-2">Editar</button>
-                            <button class="text-red-400 hover:text-red-300">Deletar</button>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -160,9 +147,7 @@
             </form>
         </div>
     </div>
-    
 
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script> 
 </body>
 </html>
