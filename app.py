@@ -1,6 +1,21 @@
 from flask import Flask, render_template, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+
+
+#PARTE DO RDS:
+user= "postgres"
+pwd="admin123"
+endpoint = "database-flask.c83skkyco8oh.us-east-1.rds.amazonaws.com"
+port = 5432
+dbname = "database-flask"
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+  f'postgresql+psycopg2://{user}:{pwd}@{endpoint}:{port}/{dbname}'
+).format(...)
+
+
+db = SQLAlchemy(app)
 
 # Dados de exemplo
 tasks = [
@@ -40,4 +55,5 @@ def index():
     return render_template('index.html', tasks=filtered_tasks)
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True)
