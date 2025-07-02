@@ -115,18 +115,18 @@
                 <h3 class="text-xl font-semibold text-accent">Adicionar Nova Task</h3>
                 <button id="closeModal" class="text-gray-400 hover:text-white">&times;</button>
             </div>
-            <form>
+            <form id="taskForm">
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">Nome da Task</label>
-                    <input type="text" class="w-full bg-gray-700 rounded px-3 py-2">
+                    <input type="text" class="w-full bg-gray-700 rounded px-3 py-2" id="task-name">
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">Descrição</label>
-                    <textarea class="w-full bg-gray-700 rounded px-3 py-2"></textarea>
+                    <textarea class="w-full bg-gray-700 rounded px-3 py-2" id="task-desc"></textarea>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">Status</label>
-                    <select class="w-full bg-gray-700 rounded px-3 py-2">
+                    <select class="w-full bg-gray-700 rounded px-3 py-2" id="task-status">
                         <option value="pendente">Pendente</option>
                         <option value="em_andamento">Em Andamento</option>
                         <option value="concluido">Concluído</option>
@@ -134,13 +134,13 @@
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">Realizar até</label>
-                    <input type="date" class="w-full bg-gray-700 rounded px-3 py-2">
+                    <input type="date" class="w-full bg-gray-700 rounded px-3 py-2" id="task-due-date">
                 </div>
                 <div class="flex justify-end">
                     <button type="button" id="cancelModal" class="mr-2 px-4 py-2 rounded border border-gray-600 hover:bg-gray-700 transition-colors">
                         Cancelar
                     </button>
-                    <button type="submit" class="bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded transition-colors">
+                    <button type="submit" class="bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded transition-colors" id="btn-add-task">
                         Salvar Task
                     </button>
                 </div>
@@ -149,5 +149,7 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script> 
+    <script src="{{ url_for('static', filename='js/add_tasks.js') }}"></script> 
+    <script src="{{ url_for('static', filename='js/actions_table.js') }}"></script> 
 </body>
 </html>
