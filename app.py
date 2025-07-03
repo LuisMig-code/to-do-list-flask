@@ -83,7 +83,8 @@ def add_task():
             status=data.get('status', 'pendente'),
             due_date=datetime.strptime(data['due_date'], '%Y-%m-%d') if data.get('due_date') else None
         )
-        
+
+
         # Adicionar ao banco de dados
         db.session.add(new_task)
         db.session.commit()
@@ -116,6 +117,48 @@ def delete_task(task_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 500
+    
+
+
+@app.route('/edit_task/<int:task_id>', methods=['PATCH'])
+def edit_task(task_id):
+    try:
+        task = Task.query.get_or_404(task_id)
+        data = request.get_json()
+
+        # Atualiza os campos se eles forem fornecidos na requisição
+        if 'name' in data:
+            task.name = data['name']
+        if 'description' in data:
+            task.description = data['description']
+        if 'status' in data:
+            task.status = data['status']
+        if 'due_date' in data:
+            if data['due_date']:
+                task.due_date = datetime.strptime(data['due_date'], '%Y-%m-%d')
+            else:
+                task.due_date = None # Permite remover a data de vencimento
+        
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': 'Task atualizada com sucesso!',
+            'task': task.to_dict()
+        })
+
+    except ValueError as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': 'Formato de data inválido. Use YYYY-MM-DD'
+        }), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Erro ao atualizar task: {str(e)}'
+        }), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)
