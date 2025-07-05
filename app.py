@@ -126,7 +126,7 @@ def edit_task(task_id):
         task = Task.query.get_or_404(task_id)
         data = request.get_json()
 
-        # Atualiza os campos se eles forem fornecidos na requisição
+        # Atualiza os campos 
         if 'name' in data:
             task.name = data['name']
         if 'description' in data:
@@ -137,8 +137,10 @@ def edit_task(task_id):
             if data['due_date']:
                 task.due_date = datetime.strptime(data['due_date'], '%Y-%m-%d')
             else:
-                task.due_date = None # Permite remover a data de vencimento
+                task.due_date = None 
+
         
+        user.verified = True
         db.session.commit()
         return jsonify({
             'success': True,
