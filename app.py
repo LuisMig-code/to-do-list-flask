@@ -120,47 +120,48 @@ def delete_task(task_id):
     
 
 
-@app.route('/edit_task/<int:task_id>', methods=['PATCH'])
+@app.route('/edit_task/<int:task_id>', methods=['PUT', 'POST'])  # Melhor usar PUT para atualizações
 def edit_task(task_id):
     try:
+        # Obter a task do banco de dados
         task = Task.query.get_or_404(task_id)
-        data = request.get_json()
-
-        # Atualiza os campos 
-        if 'name' in data:
-            task.name = data['name']
-        if 'description' in data:
-            task.description = data['description']
-        if 'status' in data:
-            task.status = data['status']
-        if 'due_date' in data:
-            if data['due_date']:
-                task.due_date = datetime.strptime(data['due_date'], '%Y-%m-%d')
-            else:
-                task.due_date = None 
-
         
-        user.verified = True
+        # Obter dados da requisição
+        data = request.get_json()
+        
+        # Validação dos dados recebidos
+        if not data or 'status' not in data:
+            return jsonify({
+                'success': False,
+                'message': 'O campo status é obrigatório'
+            }), 400
+        
+        # Validar se o status é um dos permitidos
+        valid_statuses = ['pendente', 'em_andamento', 'concluido']
+        if data['status'] not in valid_statuses:
+            return jsonify({
+                'success': False,
+                'message': f'Status inválido. Deve ser um dos: {", ".join(valid_statuses)}'
+            }), 400
+        
+        # Atualizar o status
+        task.status = data['status']
+        
+        # Commit no banco de dados
         db.session.commit()
+        
         return jsonify({
             'success': True,
-            'message': 'Task atualizada com sucesso!',
+            'message': 'Status da task atualizado com sucesso!',
             'task': task.to_dict()
         })
-
-    except ValueError as e:
-        db.session.rollback()
-        return jsonify({
-            'success': False,
-            'message': 'Formato de data inválido. Use YYYY-MM-DD'
-        }), 400
+        
     except Exception as e:
         db.session.rollback()
         return jsonify({
             'success': False,
             'message': f'Erro ao atualizar task: {str(e)}'
         }), 500
-
 
 if __name__ == '__main__':
     app.run(debug=True)

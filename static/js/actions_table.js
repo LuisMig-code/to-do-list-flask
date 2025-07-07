@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Delegation de eventos para os botões de deletar
     document.querySelector('table').addEventListener('click', function(e) {
-        if (e.target && e.target.id === 'delete-task') {
+        if (e.target && e.target.textContent === 'Deletar') {
             e.preventDefault();
             const row = e.target.closest('tr');
-            const taskId = row.querySelector('td[id="id"]').textContent;
+            const taskId = row.querySelector('td').textContent;
             
             if (confirm('Tem certeza que deseja deletar esta task?')) {
                 deleteTask(taskId, row);

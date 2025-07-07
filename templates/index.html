@@ -107,6 +107,32 @@
             </table>
         </div>
     </div>
+
+
+    <!-- Popup de Edição -->
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-gray-800 rounded-lg p-6 w-96">
+        <h3 class="text-xl font-bold mb-4">Editar Status da Task</h3>
+
+        <div class="mb-6">
+        <label class="block mb-2">Novo status:</label>
+        <select id="status-select" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2">
+            <option value="pendente">Pendente</option>
+            <option value="em_andamento">Em Andamento</option>
+            <option value="concluido">Concluído</option>
+        </select>
+        </div>
+
+        <div class="flex justify-end gap-2">
+        <button id="cancel-edit" class="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500">
+            Cancelar
+        </button>
+        <button id="save-edit" class="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500">
+            Salvar
+        </button>
+        </div>
+    </div>
+    </div>
     
     <!-- Modal para Adicionar Nova Task -->
     <div id="taskModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
@@ -151,5 +177,6 @@
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script> 
     <script src="{{ url_for('static', filename='js/add_tasks.js') }}"></script> 
     <script src="{{ url_for('static', filename='js/actions_table.js') }}"></script> 
+    <script src="{{ url_for('static', filename='js/edit_status_task.js') }}"></script> 
 </body>
 </html>
