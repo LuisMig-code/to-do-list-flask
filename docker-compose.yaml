@@ -1,0 +1,43 @@
+services:
+  flask:
+    build: .
+    depends_on:
+      - postgres
+    container_name: flask_app
+    ports:
+      - "5000:5000"
+    volumes:
+      - flask_vol:/app
+    environment:
+      - FLASK_ENV=development
+    networks:
+      - teste
+  postgres:
+    image: postgres:17
+    container_name: postgres_db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=admin123.*miguelfelipejulianamateus
+      - POSTGRES_DB=database-flask
+    ports:
+      - "5432:5432" 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - teste
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+volumes:
+  flask_vol:
+    driver: local
+  postgres_data:
+    driver: local
+
+
+networks:
+  teste: 
+    driver: bridge
+  
