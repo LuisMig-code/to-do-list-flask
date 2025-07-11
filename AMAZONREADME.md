@@ -1,7 +1,4 @@
 # Passo a Passo: Infraestrutura AWS
-
-  
-
 ## 1. Criar uma VPC
 
 - Acesse o console AWS.
@@ -49,8 +46,8 @@
 - PostGresSQL **SELECIONANDO O FREE TIER**!!!!!.
 
 - Selecione a VPC criada e a subrede **pública** (pra facilitar nossa vida).
-
-- Credenciais: Estão no app.py
+- DB identifier: database-flask2
+- Credenciais: Estão no .env
 
 - Associe a EC2 ao RDS (opção na criação).
 
@@ -62,15 +59,51 @@
 
 - Driver do PostGres:
 
-- `sudo dnf install postgresql15 postgresql15-server -y`
+-
+## SETUP DE AMBIENTE
+sudo yum update -y
+git clone <link do repositório>
+cd <caminho do repositorio>
+nano 
+COLAR DADOS DO .env no nano e salvar como .env
 
-- Git:
+## SETUP DO DRIVER DO POSTGRES
+sudo yum install -y postgresql-devel python3-devel gcc
+sudo dnf install  postgresql15 postgresql15-server -y
+pg_config --version
 
-- `sudo dnf install git`
+## SETUP PYTHON (e bibliotecas)
+sudo dnf install python3 python3-pip -y
+python3 -m venv myenv
+source myenv/bin/activate
+pip install flask flasksqlalchemy dontenv psycopg2
 
-- testar conexão com PostGres: `psql -h <ENDPOINT_RDS> -U admin -W`
+## Conectando ao RDS
+psql -h <ENDPOINT_RDS> -U postgres -W 
+<senha do .env>
 
+## Criando banco (Preferencialmente o mesmo da instancia RDS)
+CREATE DATABASE <nome do banco no .env>
+CREATE USER "ec2-user" WITH PASSWORD 'SUA_SENHA_SEGURA';
+GRANT ALL PRIVILEGES ON DATABASE "database-flask2" TO "ec2-user";
+ALTER DATABASE "database-flask2" OWNER TO "ec2-user";
+CREATE TABLE tasks (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(50),
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    due_date TIMESTAMP
+);
 
+exit
+
+## RODAR SERVIDOR
+flask run --host=0.0.0.0 --port=5000
+
+## TESTAR SERVIDOR USANDO IP PÚBLICO DA EC2
+
+# AO FINALIZAR: 
 
 ## 8. Deletar o RDS
 
